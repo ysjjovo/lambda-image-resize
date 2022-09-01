@@ -57,10 +57,11 @@ Resources:
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 
+
   ViewerRequestFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://lings3/viewer-request-function.zip
+      CodeUri: dist/viewer-request-function.zip
       Handler: index.handler
       Runtime: nodejs16.x
       MemorySize: 128
@@ -76,7 +77,7 @@ Resources:
   OriginResponseFunction:
    Type: AWS::Serverless::Function
    Properties:
-     CodeUri: s3://lings3/origin-response-function.zip
+     CodeUri: dist/origin-response-function.zip
      Handler: index.handler
      Runtime: nodejs16.x
      MemorySize: 512

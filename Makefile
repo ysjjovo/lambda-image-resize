@@ -16,10 +16,11 @@ zipRes:
 zip: zipReq zipRes
 
 upload: zip
-	cp ${baseDir}/cf.yml ${baseDir}/dist/
+	# cp ${baseDir}/cf.yml ${baseDir}/dist/
 	aws s3 cp --recursive ${baseDir}/dist s3://${CodeBucket}
-	# aws s3api put-object --bucket ${CodeBucket} --key ${cf} --body ${baseDir}/${cf} > /dev/null
-cf: upload
+deploy:
+	aws cloudformation package --template-file ${baseDir}/${cf} --s3-bucket ${CodeBucket} --output-template-file ${baseDir}/dist/${cf}
+	aws s3api put-object --bucket ${CodeBucket} --key ${cf} --body ${baseDir}/dist/${cf} > /dev/null
 	aws cloudformation create-change-set --change-set-type CREATE --stack-name ${stack_name} --change-set-name ${stack_name} --template-url https://${CodeBucket}.s3.amazonaws.com/${cf} --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameters ParameterKey="CodeBucket",ParameterValue=${CodeBucket} > /dev/null
 	aws cloudformation wait change-set-create-complete --stack-name ${stack_name} --change-set-name ${stack_name} 
 	aws cloudformation execute-change-set --change-set-name ${stack_name} --stack-name ${stack_name}
